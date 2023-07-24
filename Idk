@@ -1,0 +1,60 @@
+# Define CPU and Memory
+class CPU:
+    def __init__(self):
+        self.registers = {'A': 0, 'B': 0, 'C': 0, 'PC': 0}
+        # Add other CPU-related properties as needed
+
+    def execute(self, instruction):
+        # Parse and execute the instruction
+        opcode, operand = instruction.split(' ')
+        if opcode == 'MOV':
+            register, value = operand.split(',')
+            self.registers[register] = int(value)
+        elif opcode == 'ADD':
+            register, value = operand.split(',')
+            self.registers[register] += int(value)
+        elif opcode == 'SUB':
+            register, value = operand.split(',')
+            self.registers[register] -= int(value)
+        elif opcode == 'JMP':
+            self.registers['PC'] = int(operand)
+
+    # Add other CPU-related methods as needed
+
+class Memory:
+    def __init__(self, size):
+        self.memory = [0] * size
+
+    def write(self, address, value):
+        self.memory[address] = value
+
+    def read(self, address):
+        return self.memory[address]
+
+# Main emulator loop
+def run_emulator(program):
+    cpu = CPU()
+    memory = Memory(256)  # 256 bytes of memory for this example
+
+    # Load the program into memory starting at address 0
+    for i, instruction in enumerate(program):
+        memory.write(i, instruction)
+
+    # Emulation loop
+    while True:
+        instruction = memory.read(cpu.registers['PC'])
+        cpu.execute(instruction)
+        cpu.registers['PC'] += 1
+
+        # Add termination condition, such as an infinite loop check or specific address check
+
+# Example program for the hypothetical 8-bit computer
+program = [
+    "MOV A, 10",
+    "MOV B, 5",
+    "ADD A, B",
+    "JMP 0",  # Infinite loop
+]
+
+if __name__ == "__main__":
+    run_emulator(program)
